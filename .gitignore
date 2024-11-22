@@ -1,0 +1,14 @@
+*.suo
+*.user
+*.sln.docstates
+.vs/
+
+[Dd]ebug/
+[Rr]elease/
+x64/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+
+.DS_Store
+

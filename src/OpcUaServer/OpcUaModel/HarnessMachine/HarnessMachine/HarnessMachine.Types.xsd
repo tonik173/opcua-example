@@ -1,0 +1,20 @@
+<xs:schema
+  xmlns:Opc.Ua.DI="http://opcfoundation.org/UA/DI/Types.xsd"
+  xmlns:Opc.Ua.Machinery="http://opcfoundation.org/UA/Machinery/Types.xsd"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ua="http://opcfoundation.org/UA/2008/02/Types.xsd"
+  xmlns:tns="http://example.com/HarnessMachine"
+  targetNamespace="http://example.com/HarnessMachine"
+  elementFormDefault="qualified"
+>
+  <xs:annotation>
+    <xs:appinfo>
+      <ua:Model ModelUri="http://example.com/HarnessMachine" Version="1.0.0" PublicationDate="2024-11-20T08:14:01.4982118Z" />
+    </xs:appinfo>
+  </xs:annotation>
+  
+  <xs:import namespace="http://opcfoundation.org/UA/2008/02/Types.xsd" />
+  <xs:import namespace="http://opcfoundation.org/UA/DI/Types.xsd" />
+  <xs:import namespace="http://opcfoundation.org/UA/Machinery/Types.xsd" />
+
+</xs:schema>
