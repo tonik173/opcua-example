@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opc:ModelDesign xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:opc="http://opcfoundation.org/UA/ModelDesign.xsd"
+  xmlns:ua="http://opcfoundation.org/UA/"
+  xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd"
+  xmlns:di="http://opcfoundation.org/UA/DI/"
+  xmlns:dix="http://opcfoundation.org/UA/DI/Types.xsd"
+  xmlns:ma="http://opcfoundation.org/UA/Machinery/"
+  xmlns:max="http://opcfoundation.org/UA/Machinery/Types.xsd"
+  xmlns="http://example.com/HarnessMachine" TargetNamespace="http://example.com/HarnessMachine">
+
+  <opc:Namespaces>
+    <opc:Namespace Name="HarnessMachine" Prefix="HarnessMachine">http://example.com/HarnessMachine</opc:Namespace>
+    <opc:Namespace Name="OpcUa" Version="1.04.7" PublicationDate="2020-07-15T00:00:00Z" Prefix="Opc.Ua" InternalPrefix="Opc.Ua.Server" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd" XmlPrefix="OpcUa">http://opcfoundation.org/UA/</opc:Namespace>
+    <opc:Namespace Name="OpcUaDi" Version="1.02.2" PublicationDate="2020-06-02T00:00:00Z" Prefix="Opc.Ua.DI" XmlNamespace="http://opcfoundation.org/UA/DI/Types.xsd" XmlPrefix="DI">http://opcfoundation.org/UA/DI/</opc:Namespace>
+    <opc:Namespace Name="OpcUaMachinery" Version="1.02.0" PublicationDate="2022-05-01T00:00:00Z" Prefix="Opc.Ua.Machinery" XmlNamespace="http://opcfoundation.org/UA/Machinery/Types.xsd" XmlPrefix="Machinery">http://opcfoundation.org/UA/Machinery/</opc:Namespace>
+  </opc:Namespaces>
+  
+
+  <!-- Part:Wire -->
+  <opc:ObjectType SymbolicName="SpecificationWireType" BaseType="ua:BaseObjectType" SupportsEvents="true">
+    <opc:Description>A wire specification</opc:Description>
+    <opc:Children>
+      <opc:Property SymbolicName="Diameter" TypeDefinition="ua:PropertyType" DataType="ua:Double" ModellingRule="Mandatory" AccessLevel="ReadWrite"/>
+      <opc:Property SymbolicName="NominalCrossSection" DataType="ua:Double" ValueRank="Scalar" ModellingRule="Mandatory" AccessLevel="ReadWrite"/>
+      <opc:Property SymbolicName="Color" TypeDefinition="ua:PropertyType" DataType="ua:EnumValueType" ModellingRule="Optional" AccessLevel="ReadWrite"/>
+      <opc:Variable SymbolicName="NumberOfStrands" DataType="ua:Double" ValueRank="Scalar" TypeDefinition="ua:AnalogItemType" />
+    </opc:Children>
+  </opc:ObjectType>
+
+  <!-- JobState -->
+  <opc:ObjectType SymbolicName="JobState" BaseType="ua:BaseObjectType" SupportsEvents="true">
+    <opc:Description>A job state specification</opc:Description>
+    <opc:Children>
+      <opc:Variable SymbolicName="JobKey" DataType="ua:String" ValueRank="Scalar" />
+      <opc:Variable SymbolicName="JobName" DataType="ua:String" ValueRank="Scalar" />
+      <opc:Variable SymbolicName="ArticleKey" DataType="ua:String" ValueRank="Scalar" />
+      <opc:Variable SymbolicName="ArticleName" DataType="ua:String" ValueRank="Scalar" />
+      <opc:Variable SymbolicName="State" DataType="ua:String" ValueRank="Scalar" />
+    </opc:Children>
+  </opc:ObjectType>
+
+
+  <!-- Method types: need to be called xxxMethodType -->
+  <opc:Method SymbolicName="AddPartMethodType">
+    <opc:InputArguments>
+      <opc:Argument Name="Part" DataType="ua:String">
+        <opc:Description>A material type</opc:Description>
+      </opc:Argument>
+    </opc:InputArguments>
+    <opc:OutputArguments>
+      <opc:Argument Name="Result" DataType="ua:Int32">
+        <opc:Description>Negative number are errors</opc:Description>
+      </opc:Argument>
+    </opc:OutputArguments>
+  </opc:Method>
+
+  <opc:Method SymbolicName="StartMethodType">
+    <opc:InputArguments>
+      <opc:Argument Name="ArticleID" DataType="ua:String">
+        <opc:Description>The id of the article to produce</opc:Description>
+      </opc:Argument>
+      <opc:Argument Name="Items" DataType="ua:Int32">
+        <opc:Description>Number of items to produce</opc:Description>
+      </opc:Argument>
+    </opc:InputArguments>
+    <opc:OutputArguments>
+      <opc:Argument Name="Result" DataType="ua:Int32">
+        <opc:Description>Negative number are errors</opc:Description>
+      </opc:Argument>
+    </opc:OutputArguments>
+  </opc:Method>
+
+  <opc:Method SymbolicName="StopMethodType">
+    <opc:OutputArguments>
+      <opc:Argument Name="Result" DataType="ua:Int32">
+        <opc:Description>Negative number are errors</opc:Description>
+      </opc:Argument>
+    </opc:OutputArguments>
+  </opc:Method>
+  
+  <!-- HarnessSubmachineType -->
+  <opc:ObjectType SymbolicName="HarnessSubmachineType" BaseType="ua:BaseObjectType" SupportsEvents="true">
+    <opc:Description>An omega machine component</opc:Description>
+    <opc:Children>
+      <opc:Object SymbolicName="Identification" TypeDefinition="ma:MachineryComponentIdentificationType">
+        <opc:BrowseName>Identification</opc:BrowseName>
+        <opc:Children>
+          <opc:Property SymbolicName="DeviceRevision" TypeDefinition="ua:PropertyType" DataType="ua:String" ModellingRule="Mandatory"/>
+        </opc:Children>
+      </opc:Object>
+    </opc:Children>
+  </opc:ObjectType>
+
+  <!-- HarnessMachineType -->
+  <opc:ObjectType SymbolicName="HarnessMachineType" BaseType="ua:BaseObjectType" SupportsEvents="true">
+    <opc:Description>An omega machine</opc:Description>
+
+    <opc:Children>
+      <!-- MachineBuildingBlocks -->
+      <opc:Object SymbolicName="MachineBuildingBlocks" TypeDefinition="ua:FolderType">
+        <opc:BrowseName>MachineBuildingBlocks</opc:BrowseName>
+
+        <opc:Children>
+          <!-- Components -->
+          <opc:Object SymbolicName="Components" TypeDefinition="ma:MachineComponentsType">
+            <opc:BrowseName>Components</opc:BrowseName>
+            <opc:Children>
+              
+              <opc:Object SymbolicName="CoordinationUnit" TypeDefinition="HarnessSubmachineType">
+                <opc:BrowseName>CoordinationUnit</opc:BrowseName>
+                <opc:Children>
+                  <opc:Variable SymbolicName="ItemsProduced" DataType="ua:Int32" ValueRank="Scalar" TypeDefinition="ua:AnalogUnitType" />
+                  <opc:Object SymbolicName="JobState" TypeDefinition="JobState" />
+                </opc:Children>
+              </opc:Object>
+              
+              <opc:Object SymbolicName="LeadSetAssembler" TypeDefinition="HarnessSubmachineType">
+                <opc:BrowseName>LeadSetAssembler</opc:BrowseName>
+                <opc:Children>
+                  <opc:Variable SymbolicName="LeadSetNumber" DataType="ua:Int32" ValueRank="Scalar" TypeDefinition="ua:AnalogUnitType" />
+                </opc:Children>
+              </opc:Object>
+
+              <opc:Object SymbolicName="HarnessAssembler" TypeDefinition="HarnessSubmachineType">
+                <opc:BrowseName>HarnessAssembler</opc:BrowseName>
+                <opc:Children>
+                  <opc:Variable SymbolicName="LeadSetEnd" DataType="ua:String" ValueRank="Scalar" />
+                  <opc:Variable SymbolicName="HousingName" DataType="ua:String" ValueRank="Scalar" />
+                  <opc:Variable SymbolicName="CavityNumber" DataType="ua:String" ValueRank="Scalar"  />
+                </opc:Children>
+              </opc:Object>
+
+              <opc:Object SymbolicName="HarnessFoamer" TypeDefinition="HarnessSubmachineType">
+                <opc:BrowseName>HarnessFoamer</opc:BrowseName>
+                <opc:Children>
+                  <opc:Variable SymbolicName="Gripper1" DataType="ua:String" ValueRank="Scalar" />
+                  <opc:Variable SymbolicName="Gripper2" DataType="ua:String" ValueRank="Scalar" />
+                  <opc:Variable SymbolicName="Gripper3" DataType="ua:String" ValueRank="Scalar"  />
+                </opc:Children>
+              </opc:Object>
+              
+            </opc:Children>
+          </opc:Object>
+
+          <!-- Identification -->
+          <opc:Object SymbolicName="Identification" TypeDefinition="ma:MachineIdentificationType">
+            <opc:BrowseName>Identification</opc:BrowseName>
+            <opc:Children>
+              <opc:Property SymbolicName="AssetId" ModellingRule="Mandatory"/>
+              <opc:Property SymbolicName="ComponentName"/>
+              <opc:Property SymbolicName="DeviceClass"/>
+              <opc:Property SymbolicName="HardwareRevision"/>
+              <opc:Property SymbolicName="InitialOperationDate"/>
+              <opc:Property SymbolicName="Location"/>
+              <opc:Property SymbolicName="ManufacturerUri"/>
+              <opc:Property SymbolicName="Model" />
+              <opc:Property SymbolicName="MonthOfConstruction" ModellingRule="Optional" />
+              <opc:Property SymbolicName="ProductCode"/>
+              <opc:Property SymbolicName="SoftwareRevision"/>
+              <opc:Property SymbolicName="YearOfConstruction" ModellingRule="Mandatory" />
+            </opc:Children>
+          </opc:Object>
+
+          <!-- MachineryItemState -->
+          <opc:Object SymbolicName="MachineryItemState" TypeDefinition="ma:MachineryItemState_StateMachineType">
+            <opc:BrowseName>MachineryItemState</opc:BrowseName>
+          </opc:Object>
+
+          <!-- MachineryOperationMode -->
+          <opc:Object SymbolicName="MachineryOperationMode" TypeDefinition="ma:MachineryOperationModeStateMachineType">
+            <opc:BrowseName>MachineryOperationMode</opc:BrowseName>
+          </opc:Object>
+
+        </opc:Children>
+      </opc:Object>
+
+      <opc:Method SymbolicName="Start" TypeDefinition="StartMethodType" ModellingRule="Mandatory"></opc:Method>
+      <opc:Method SymbolicName="Stop" TypeDefinition="StopMethodType" ModellingRule="Mandatory"></opc:Method>
+      <opc:Method SymbolicName="AddPart" TypeDefinition="AddPartMethodType" ModellingRule="Mandatory"></opc:Method>
+    </opc:Children>
+
+    <opc:References>
+      <opc:Reference IsInverse="false">
+        <opc:ReferenceType>ua:HasComponent</opc:ReferenceType>
+        <opc:TargetId>HarnessMachineType_MachineBuildingBlocks_Components</opc:TargetId>
+      </opc:Reference>
+      <opc:Reference IsInverse="false">
+        <opc:ReferenceType>ua:HasComponent</opc:ReferenceType>
+        <opc:TargetId>HarnessMachineType_MachineBuildingBlocks_Identification</opc:TargetId>
+      </opc:Reference>
+    </opc:References>
+
+  </opc:ObjectType>
+
+  <!-- Machines -->
+  <opc:Object SymbolicName="Machines" TypeDefinition="ua:FolderType" SupportsEvents="true">
+
+    <opc:Children>
+      <opc:Object SymbolicName="HarnessMachine" TypeDefinition="HarnessMachineType">
+        <opc:References>
+          <opc:Reference IsInverse="true">
+            <opc:ReferenceType>ua:Organizes</opc:ReferenceType>
+            <opc:TargetId>ma:Machines</opc:TargetId>
+          </opc:Reference>
+        </opc:References>
+      </opc:Object>
+
+      <opc:Object SymbolicName="Wires" TypeDefinition="ua:FolderType" SupportsEvents="true">
+        <opc:Children>
+        </opc:Children>
+      </opc:Object>
+      
+    </opc:Children>
+
+    <opc:References>
+      <opc:Reference>
+        <opc:ReferenceType>ua:HasNotifier</opc:ReferenceType>
+        <opc:TargetId>Machines_HarnessMachine</opc:TargetId>
+      </opc:Reference>
+      <opc:Reference IsInverse="true">
+        <opc:ReferenceType>ua:Organizes</opc:ReferenceType>
+        <opc:TargetId>ua:ObjectsFolder</opc:TargetId>
+      </opc:Reference>
+      <opc:Reference IsInverse="true">
+        <opc:ReferenceType>ua:HasNotifier</opc:ReferenceType>
+        <opc:TargetId>ua:Server</opc:TargetId>
+      </opc:Reference>
+    </opc:References>
+
+  </opc:Object>
+
+</opc:ModelDesign>
